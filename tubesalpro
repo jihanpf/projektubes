@@ -1,0 +1,211 @@
+package main
+
+import "fmt"
+
+// ------------------------------
+// STRUCT
+// ------------------------------
+type Proyek struct {
+	Nama     string
+	Klien    string
+	Deadline int
+	Bayaran  int
+	Status   string
+}
+
+// ------------------------------
+// VARIABEL GLOBAL
+// ------------------------------
+var daftarProyek [100]Proyek
+var jumlahProyek int
+
+// ------------------------------
+// FUNGSI TAMBAH PROYEK
+// ------------------------------
+func tambahProyek() {
+	var nama string
+	var klien string
+	var status string
+	var deadline int
+	var bayaran int
+
+	fmt.Print("Masukkan nama proyek: ")
+	fmt.Scan(&nama)
+
+	fmt.Print("Masukkan nama klien: ")
+	fmt.Scan(&klien)
+
+	fmt.Print("Masukkan deadline: ")
+	fmt.Scan(&deadline)
+
+	fmt.Print("Masukkan bayaran: ")
+	fmt.Scan(&bayaran)
+
+	fmt.Print("Masukkan status: ")
+	fmt.Scan(&status)
+
+	var proyekBaru Proyek
+	proyekBaru.Nama = nama
+	proyekBaru.Klien = klien
+	proyekBaru.Deadline = deadline
+	proyekBaru.Bayaran = bayaran
+	proyekBaru.Status = status
+
+	daftarProyek[jumlahProyek] = proyekBaru
+	jumlahProyek++
+
+	fmt.Println("Proyek berhasil ditambahkan.")
+}
+
+// ------------------------------ //
+// FUNGSI TAMPILKAN SEMUA         //
+// ------------------------------ //
+func tampilkanSemua() {
+	if jumlahProyek == 0 {
+		fmt.Println("Tidak ada proyek yang tersedia.")
+		return
+	}
+	fmt.Println("\nDAFTAR PROYEK:")
+	var i int
+	for i = 0; i < jumlahProyek; i++ {
+		fmt.Printf("Proyek #%d\n", i+1)
+		fmt.Println("Nama     :", daftarProyek[i].Nama)
+		fmt.Println("Klien    :", daftarProyek[i].Klien)
+		fmt.Println("Deadline :", daftarProyek[i].Deadline)
+		fmt.Println("Bayaran  :", daftarProyek[i].Bayaran)
+		fmt.Println("Status   :", daftarProyek[i].Status)
+		fmt.Println("-----------------------------")
+	}
+}
+
+// ------------------------------ //
+// FUNGSI CARI PROYEK             //
+// ------------------------------ //
+func cariProyek() {
+	var keyword string
+	fmt.Print("Masukkan nama proyek atau klien: ")
+	fmt.Scan(&keyword)
+
+	var ditemukan bool = false
+	var i int
+	for i = 0; i < jumlahProyek; i++ {
+		if daftarProyek[i].Nama == keyword || daftarProyek[i].Klien == keyword {
+			fmt.Println("Proyek ditemukan:")
+			fmt.Println("Nama     :", daftarProyek[i].Nama)
+			fmt.Println("Klien    :", daftarProyek[i].Klien)
+			fmt.Println("Deadline :", daftarProyek[i].Deadline)
+			fmt.Println("Bayaran  :", daftarProyek[i].Bayaran)
+			fmt.Println("Status   :", daftarProyek[i].Status)
+			ditemukan = true
+		}
+	}
+	if !ditemukan {
+		fmt.Println("Proyek tidak ditemukan.")
+	}
+}
+
+// ------------------------------ //
+// FUNGSI UPDATE STATUS           //
+// ------------------------------ //
+func updateStatusProyek() {
+	var namaProyek string
+	var statusBaru string
+
+	fmt.Print("Masukkan nama proyek yang ingin diperbarui: ")
+	fmt.Scan(&namaProyek)
+
+	fmt.Print("Masukkan status baru: ")
+	fmt.Scan(&statusBaru)
+
+	var ketemu bool = false
+	var i int
+	for i = 0; i < jumlahProyek; i++ {
+		if daftarProyek[i].Nama == namaProyek {
+			daftarProyek[i].Status = statusBaru
+			ketemu = true
+			fmt.Println("Status berhasil diperbarui.")
+			break
+		}
+	}
+	if !ketemu {
+		fmt.Println("Proyek tidak ditemukan.")
+	}
+}
+
+// ------------------------------ //
+// FUNGSI SELECTION SORT DEADLINE //
+// ------------------------------ //
+func urutkanDeadline() {
+	var i int
+	for i = 0; i < jumlahProyek-1; i++ {
+		var min int = i
+		var j int
+		for j = i + 1; j < jumlahProyek; j++ {
+			if daftarProyek[j].Deadline < daftarProyek[min].Deadline {
+				min = j
+			}
+		}
+		var temp Proyek = daftarProyek[i]
+		daftarProyek[i] = daftarProyek[min]
+		daftarProyek[min] = temp
+	}
+	fmt.Println("Diurutkan berdasarkan deadline (tercepat).")
+	tampilkanSemua()
+}
+
+// ------------------------------ //
+// FUNGSI INSERTION SORT BAYARAN //
+// ------------------------------//
+func urutkanBayaran() {
+	var i int
+	for i = 1; i < jumlahProyek; i++ {
+		var temp Proyek = daftarProyek[i]
+		var j int = i - 1
+		for j >= 0 && daftarProyek[j].Bayaran < temp.Bayaran {
+			daftarProyek[j+1] = daftarProyek[j]
+			j--
+		}
+		daftarProyek[j+1] = temp
+	}
+	fmt.Println("Diurutkan berdasarkan bayaran (terbesar).")
+	tampilkanSemua()
+}
+
+//------------------------------//
+// 			FUNGSI UTAMA
+// ------------------------------//
+func main() {
+	var pilihan int
+
+for{
+	fmt.Println("\n=== MENU MANAJEMEN PROYEK FREELANCE ===")
+	fmt.Println("1. Tambah Proyek")
+	fmt.Println("2. Tampilkan Semua Proyek")
+	fmt.Println("3. Cari Proyek")
+	fmt.Println("4. Update Status Proyek")
+	fmt.Println("5. Urutkan Deadline (Selection Sort)")
+	fmt.Println("6. Urutkan Bayaran (Insertion Sort)")
+	fmt.Println("0. Keluar")
+	fmt.Print("Pilih menu:")
+	fmt.Scan(&pilihan)
+
+		if pilihan == 1 {
+			tambahProyek()
+		} else if pilihan == 2 {
+			tampilkanSemua()
+		} else if pilihan == 3 {
+			cariProyek()
+		} else if pilihan == 4 {
+			updateStatusProyek()
+		} else if pilihan == 5 {
+			urutkanDeadline()
+		} else if pilihan == 6 {
+			urutkanBayaran()
+		} else if pilihan == 0 {
+			fmt.Println("Terima kasih! Program selesai.")
+			break
+		} else {
+			fmt.Println("Pilihan tidak valid.")
+		}
+	}
+}
